@@ -96,13 +96,14 @@
 }
 @synthesize pagesDict;
 @synthesize renderedPages;
-
+@synthesize effectView;
 
 - (id)initWithFrame:(CGRect)frame
            document:(RoboDocument *)object pdfController:(RoboPDFController *)ipdfController {//    firstPage: (UIImage*) firstImage{
 
 
     if ((self = [super initWithFrame:frame])) {
+
         inited = NO;
         pdfController = ipdfController;
         pdfController.pagebarDelegate = self;
@@ -113,9 +114,11 @@
         offsetCounter = 0;
         prevOffset = 0;
         currentWindowSize = 6;
-        //    firstPageImage = firstImage;
-        //   _pdfController = ipdfController;
-        //   _pdfController.pagebarDelegate = self;
+
+        UIBlurEffect *blurrEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        effectView = [[UIVisualEffectView alloc] initWithEffect:blurrEffect];
+        effectView.frame = self.bounds;
+        [self addSubview:effectView];
 
         document = object; // Retain the document object for our use
 
@@ -130,24 +133,22 @@
         self.userInteractionEnabled = YES;
         self.contentMode = UIViewContentModeRedraw;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-        //self.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.6f];
-        [self setBackgroundColor:UIColorFromRGBWithAlpha(0x333333)];
-
 
         trackControl = [[RoboTrackControl alloc] initWithFrame:CGRectMake(0, sizes.topScrollGap - sizes.scrollSliderGap, self.frame.size.width, self.frame.size.height) page:pages previewPageWidth:previewPageWidth lastPage:pages]; // Track control view
         [trackControl setContentSize:barContentSize];
         trackControl.showsVerticalScrollIndicator = NO;
         trackControl.showsHorizontalScrollIndicator = NO;
         [trackControl addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
+
         UITapGestureRecognizer *trackTouchUpInside = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(trackViewTouchUpInside:)];
         trackTouchUpInside.numberOfTapsRequired = 1;
+
         [trackControl addGestureRecognizer:trackTouchUpInside];
         [self addSubview:trackControl]; // Add the track control and thumbs view
         pagebarSlider.value = [document.currentPage floatValue];
         // [self sliderValueChanged:pagebarSlider];
         [trackControl setStrokePage:[document.currentPage intValue]];
         [trackControl setDelegate:self];
-
 
         CGRect pagebarFrame = frame;
         pagebarFrame.origin.x = 0.0;
@@ -259,6 +260,7 @@
         self.alpha = 0.0f;
 
         [self start];
+
         /*   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];*/
     }
 
@@ -402,6 +404,41 @@
     [pageLabel setText:[NSString stringWithFormat:@"%i / %i", page, [document.pageCount intValue]]];
 
     [trackControl setContentOffset:CGPointMake((barContentSize.width - self.bounds.size.width) * ratio, 0)];
+    
+    sliderValueChanged = NO;
+}
+
+
+- (void)sliderValueChangedToPage:(int)page {
+
+    sliderValueChanged = YES;
+
+    CGPoint offset = trackControl.contentOffset;
+    [trackControl setContentOffset:offset animated:YES];
+
+    float documentPage = [document.pageCount floatValue];
+
+    if (page < 1)
+        page = 1;
+    if (page > documentPage)
+        page = documentPage;
+
+    double ratio = 0;
+    if (pagebarSlider.maximumValue != pagebarSlider.minimumValue)
+        ratio = (page - pagebarSlider.minimumValue) / (pagebarSlider.maximumValue - pagebarSlider.minimumValue);
+
+    if (ratio < 0)
+        ratio = 0;
+    if (ratio > 1)
+        ratio = 1;
+
+    CGRect pageLabelViewRect = CGRectMake((self.bounds.size.width - sizes.pageNumberWidth) * ratio, self.frame.size.height - sizes.sliderHeight + (pagebarSlider.frame.size.height - sizes.pageNumberHeight) / 2, sizes.pageNumberWidth, sizes.pageNumberHeight);
+    [pageLabelView setFrame:pageLabelViewRect];
+
+    [pageLabel setText:[NSString stringWithFormat:@"%i / %i", page, [document.pageCount intValue]]];
+
+    [trackControl setContentOffset:CGPointMake((barContentSize.width - self.bounds.size.width) * ratio, 0) animated:YES];
+
 
     sliderValueChanged = NO;
 }
@@ -435,6 +472,7 @@
 }
 
 - (void)layoutSubviews {
+    [super layoutSubviews];
 
     CGRect trackRect = trackControl.frame;
     trackRect.size.width = self.bounds.size.width;
@@ -444,6 +482,7 @@
     sliderFrame.size.width = self.bounds.size.width;
     [pagebarSlider setFrame:sliderFrame];
 
+    [effectView setFrame:self.bounds];
 }
 
 
@@ -466,9 +505,6 @@
 
 - (void)showPagebar {
     offsetCounter = maxOffsetForUpdate;
-    pagebarSlider.value = [document.currentPage floatValue];
-    [self sliderValueChanged:pagebarSlider];
-    [trackControl setStrokePage:[document.currentPage intValue]];
     [UIView animateWithDuration:0.1 delay:0.0
                         options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction
                      animations:^(void) {
@@ -518,7 +554,7 @@
 
 - (void)updateFirstAndLastPagesOnScreen2:(float)offset withRemoving:(BOOL)withRemoving {
     if (inited) {
-#warning fix the number 1024 1
+
         int newBeginPage = floor((offset - previewPageWidth) / (sizes.thumbSmallGap / 2 + previewPageWidth)) + 1;
         int newEndPage = floor((offset + CGRectGetWidth(self.frame)) / (sizes.thumbSmallGap / 2 + previewPageWidth)) + 2;
 
@@ -697,10 +733,18 @@
     }
 }
 
+
 - (void)start {
     inited = YES;
     [self updateFirstAndLastPagesOnScreen2:trackControl.contentOffset.x withRemoving:YES];
 }
+
+
+- (void)setStrokePage:(int)page {
+    [self sliderValueChangedToPage:page];
+    [trackControl setStrokePage:page];
+}
+
 
 @end
 
@@ -767,6 +811,7 @@
 
     }
 }
+
 
 - (void)dealloc {
 

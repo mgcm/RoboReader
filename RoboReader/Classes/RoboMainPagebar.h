@@ -76,6 +76,7 @@
 }
 @property(atomic, retain) NSMutableDictionary *pagesDict;
 @property(atomic, retain) NSMutableDictionary *renderedPages;
+@property(nonatomic, retain) UIVisualEffectView *effectView;
 
 @property(nonatomic, unsafe_unretained, readwrite) id <RoboMainPagebarDelegate> delegate;
 
@@ -92,6 +93,8 @@
 - (void)reset;
 
 - (void)start;
+
+- (void)setStrokePage:(int)page;
 
 @end
 

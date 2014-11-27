@@ -38,13 +38,14 @@
 
 
 @synthesize delegate;
+@synthesize effectView;
 
 
-- (id)initWithFrame:(CGRect)frame {
-
-
+- (id)initWithFrame:(CGRect)frame
+{
     return [self initWithFrame:frame title:nil];
 }
+
 
 - (id)initWithFrame:(CGRect)frame title:(NSString *)title {
 
@@ -53,15 +54,17 @@
 
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 
+        UIBlurEffect *blurrEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        effectView = [[UIVisualEffectView alloc] initWithEffect:blurrEffect];
+        effectView.frame = self.bounds;
+        [self addSubview:effectView];
+
         CGFloat titleX = TITLE_X;
         CGFloat titleWidth = (self.bounds.size.width - (titleX * 2.0f));
-#warning fix the number 1024, reset toolbar img frame on orientation change
-        UIImageView *toolbarImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024.0f, frame.size.height)];
-        [toolbarImg setImage:[UIImage imageNamed:@"nav_bar_plashka.png"]];
-        [self addSubview:toolbarImg];
+
 
         // shift buttons a little to avoid overlapping with ios7 status bar
-        float ios7padding = (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) ? 7.0f : 0.0f;
+        float ios7padding = 0.0f;
 
         CGRect titleRect = CGRectMake(titleX, TITLE_Y + ios7padding, titleWidth, TITLE_HEIGHT);
 
@@ -102,11 +105,10 @@
     return self;
 }
 
+
+
 - (void)dealloc {
-
-
     theTitleLabel = nil;
-
 }
 
 
@@ -147,9 +149,15 @@
 }
 
 
-- (void)doneButtonTapped:(UIBarButtonItem *)button {
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [effectView setFrame:self.bounds];
+}
 
 
+- (void)doneButtonTapped:(UIBarButtonItem *)button
+{
     [delegate dismissButtonTapped];
 }
 

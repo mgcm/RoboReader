@@ -39,6 +39,7 @@
     UILabel *theTitleLabel;
 }
 
+@property(nonatomic, retain) UIVisualEffectView *effectView;
 @property(nonatomic, unsafe_unretained, readwrite) id <RoboMainToolbarDelegate> delegate;
 
 - (id)initWithFrame:(CGRect)frame title:(NSString *)title;

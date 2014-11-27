@@ -27,37 +27,19 @@
 
 @synthesize delegate;
 
-- (void)showDocument {
-
-
+- (void)showDocument
+{
     [self updateScrollViewContentSize];
 
     startPageNumber = [document.currentPage intValue];
-//    if (startPageNumber <= 1)
-//        startPageNumber = 2;
-
-//    [self showDocumentPage:1 fastScroll:NO];
-
-
-//    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-//        [self.view setAlpha:0.0];
-//    }                completion:^(BOOL finished) {
-//        [self showDocumentPage:startPageNumber fastScroll:NO];
-//        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-//            [self.view setAlpha:1.0];
-//        }                completion:nil];
-//
-//    }];
-
     [self showDocumentPage:startPageNumber fastScroll:NO];
 
     document.lastOpen = [NSDate date];
-
 }
 
-- (void)updateScrollViewContentSize {
 
-
+- (void)updateScrollViewContentSize
+{
     int count = [document.pageCount intValue];
     if (count == 0)
         count = 1;
@@ -238,6 +220,7 @@
         document.currentPage = @(page);
     }
 
+    [mainPagebar setStrokePage:[document.currentPage intValue]];
 }
 
 
@@ -338,16 +321,9 @@
 
     NSAssert(!(document == nil), @"RoboDocument == nil");
 
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    else {
-        [self setWantsFullScreenLayout:YES];
-        
-    }
-    
-    CGRect viewRect = self.view.bounds;
+    self.automaticallyAdjustsScrollViewInsets = NO;
 
+    CGRect viewRect = self.view.bounds;
 
     self.view.backgroundColor = [UIColor blackColor];
 
@@ -357,19 +333,11 @@
     pdfController.viewDelegate = self;
     pdfController.fileURL = document.fileURL;
     pdfController.password = document.password;
-//
-//    if (small_document != nil) {
-//        smallPdfController = [[RoboPDFController alloc] initWithDocument:small_document];
-//        smallPdfController.viewDelegate = self;
-//        smallPdfController.isSmall = YES;
-//    }
 
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
-
     contentViews = [[NSMutableDictionary alloc] init];
     loadedPages = [[NSMutableSet alloc] init];
-
 
     theScrollView = [[UIScrollView alloc] initWithFrame:viewRect]; // All
 
@@ -416,10 +384,15 @@
     singleTapOne.numberOfTouchesRequired = 1;
     singleTapOne.numberOfTapsRequired = 1;
     singleTapOne.delegate = self;
-
-
     [self.view addGestureRecognizer:singleTapOne];
 
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+    doubleTap.numberOfTapsRequired = 2;
+    doubleTap.numberOfTouchesRequired = 1;
+    doubleTap.delegate = self;
+    [self.view addGestureRecognizer:doubleTap];
+
+    [singleTapOne requireGestureRecognizerToFail:doubleTap];
 
     leftButton = [[UIButton alloc] init];
     [leftButton addTarget:self action:@selector(prevPage:) forControlEvents:UIControlEventTouchDown];
@@ -432,7 +405,6 @@
     [self willAnimateRotationToInterfaceOrientation:self.interfaceOrientation duration:0];
 
     barsHiddenFlag = YES;
-
 }
 
 
@@ -464,18 +436,14 @@
 }
 
 
-- (void)viewDidUnload {
-
+- (void)viewDidUnload
+{
     mainToolbar = nil;
-
     mainPagebar = nil;
-
     theScrollView = nil;
-
-
     [super viewDidUnload];
-
 }
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 #ifdef DEBUGX
@@ -498,7 +466,19 @@
     didRotate = YES;
     pdfController.didRotate = YES;
 
+    // fadeout all views
+    for (NSString *key in loadedPages) {
+        RoboContentView *contentView = contentViews[key];
+        [UIView animateWithDuration:0.1 animations:^{
+            contentView.alpha = 0.0f;
+        } completion:^(BOOL finished) {
+            [contentView removeFromSuperview];
+            [contentViews removeObjectForKey:key];
+        }];
+    }
+    [loadedPages removeAllObjects];
 }
+
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
 #ifdef DEBUGX
@@ -538,7 +518,6 @@
         [rightButton setFrame:CGRectMake(702.0f, 0, 66.0f, CGRectGetHeight(self.view.frame))];
 
     }
-
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -550,9 +529,8 @@
 
 }
 
-- (void)didReceiveMemoryWarning {
-
-
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
 
     pdfController.resetPdfDoc = YES;
@@ -560,7 +538,6 @@
     if (smallPdfController) {
         smallPdfController.resetPdfDoc = YES;
     }
-
 }
 
 - (void)dealloc {
@@ -571,18 +548,8 @@
 
     mainToolbar = nil;
     mainPagebar = nil;
-
     theScrollView = nil;
-
     document = nil;
-
-
-}
-
-
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-
-    [self hideBars];
 }
 
 
@@ -610,30 +577,44 @@
 }
 
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)recognizer shouldReceiveTouch:(UITouch *)touch {
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Gesture Related Stuff
+///////////////////////////////////////////////////////////////////////////////
 
-    if ([touch.view isKindOfClass:[UIScrollView class]]) return YES;
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)recognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([touch.view isKindOfClass:[UIScrollView class]])
+        return YES;
 
     return NO;
 }
 
 
-- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
-
-
+- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer
+{
     if (barsHiddenFlag) {
         [self showBars];
     }
     else {
         [self hideBars];
     }
-
 }
 
 
-- (void)dismissButtonTapped {
+- (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
+{
+    NSLog(@"hello double tap");
+}
 
 
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Button handlers
+///////////////////////////////////////////////////////////////////////////////
+
+
+- (void)dismissButtonTapped
+{
     [document saveRoboDocument];
 
     if ([delegate respondsToSelector:@selector(dismissRoboViewController:)] == YES) {
@@ -646,18 +627,16 @@
 }
 
 
-- (void)openPage:(int)page {
-
-
+- (void)openPage:(int)page
+{
     [self showDocumentPage:page fastScroll:NO];
 }
 
 
-- (void)applicationWill:(NSNotification *)notification {
-
-
+- (void)applicationWill:(NSNotification *)notification
+{
     [document saveRoboDocument]; // Save any RoboDocument object changes
-
 }
+
 
 @end
