@@ -56,12 +56,13 @@
     return unique;
 }
 
-+ (NSString *)applicationPath {
++ (NSString *)documentsPath
+{
+    NSFileManager *fileManager = [NSFileManager new]; // File manager instance
 
+    NSURL *pathURL = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
 
-    NSArray *documentsPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-
-    return [documentsPaths[0] stringByDeletingLastPathComponent]; // Strip "Documents" component
+    return [pathURL path]; // Path to the application's "~/Documents" directory
 }
 
 + (NSString *)applicationSupportPath {
@@ -79,9 +80,9 @@
 
     assert(fullFilePath != nil); // Ensure that the full file path is not nil
 
-    NSString *applicationPath = [RoboDocument applicationPath]; // Get the application path
+    NSString *documentsPath = [RoboDocument documentsPath]; // Get the application path
 
-    NSRange range = [fullFilePath rangeOfString:applicationPath]; // Look for the application path
+    NSRange range = [fullFilePath rangeOfString:documentsPath]; // Look for the application path
 
     assert(range.location != NSNotFound); // Ensure that the application path is in the full file path
 
@@ -198,7 +199,7 @@
 
             if (thePDFDocRef != NULL) // Get the number of pages in a document
             {
-                int pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef);
+                NSInteger pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef);
 
                 _pageCount = @(pageCount);
 
@@ -250,7 +251,7 @@
 
     if (_fileURL == nil) // Create and keep the file URL the first time it is requested
     {
-        NSString *fullFilePath = [[RoboDocument applicationPath] stringByAppendingPathComponent:_fileName];
+        NSString *fullFilePath = [[RoboDocument documentsPath] stringByAppendingPathComponent:_fileName];
 
         _fileURL = [[NSURL alloc] initFileURLWithPath:fullFilePath isDirectory:NO]; // File URL from full file path
     }
@@ -307,22 +308,22 @@
         _fileName = [decoder decodeObjectForKey:@"FileName"];
 
         _fileDate = [decoder decodeObjectForKey:@"FileDate"];
-
+        
         _pageCount = [decoder decodeObjectForKey:@"PageCount"];
-
+        
         _currentPage = [decoder decodeObjectForKey:@"PageNumber"];
-
+        
         _bookmarks = [[decoder decodeObjectForKey:@"Bookmarks"] mutableCopy];
-
+        
         _fileSize = [decoder decodeObjectForKey:@"FileSize"];
-
+        
         _lastOpen = [decoder decodeObjectForKey:@"LastOpen"];
-
+        
         if (_bookmarks == nil) _bookmarks = [NSMutableIndexSet new];
-
+        
         if (_guid == nil) _guid = [RoboDocument GUID];
     }
-
+    
     return self;
 }
 

@@ -26,6 +26,24 @@
     RoboViewController *roboViewController;
 }
 
+
+- (void)loadView
+{
+    [super loadView];
+
+    // Move files PDF's to /Documents
+    NSFileManager *fileManager = [NSFileManager new];
+    NSString *documentsPath = [RoboDocument documentsPath];
+
+    for (NSString *sourcePath in [[NSBundle mainBundle] pathsForResourcesOfType:@"pdf" inDirectory:nil]) // PDFs
+    {
+        NSString *targetPath = [documentsPath stringByAppendingPathComponent:[sourcePath lastPathComponent]];
+        //[fileManager removeItemAtPath:targetPath error:NULL]; // Delete target file
+        [fileManager copyItemAtPath:sourcePath toPath:targetPath error:NULL];
+    }
+}
+
+
 - (void)viewDidLoad {
 
     [super viewDidLoad];
@@ -60,7 +78,7 @@
 
     NSString *password = @"";
     
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"f5_newspaper" ofType:@"pdf"];
+    NSString *filePath = [[RoboDocument documentsPath] stringByAppendingPathComponent:@"f5_newspaper.pdf"];
 
     assert(filePath != nil);
 

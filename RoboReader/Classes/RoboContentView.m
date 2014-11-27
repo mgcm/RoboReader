@@ -49,7 +49,7 @@
 	{
 
         noTiledLayer = YES;
-        pageNumber = page;
+        pageNumber = (int)page;
         _isLandscape = isLandscape;
         
         if (page == 0)
@@ -91,7 +91,7 @@
            
             pageNumberTextField =  [[UITextField alloc] initWithFrame:self.bounds];
             if (page <= [RoboPDFModel instance].numberOfPages) {
-                [pageNumberTextField setText:[NSString stringWithFormat:@"%i", page]];
+                [pageNumberTextField setText:[NSString stringWithFormat:@"%lu", (unsigned long)page]];
             }
             [pageNumberTextField setTextColor:[UIColor whiteColor]];
             [pageNumberTextField setTextAlignment:NSTextAlignmentCenter];
@@ -113,7 +113,7 @@
                 theContentViewImage2PDF = [[UIImageView alloc] init];
                 pageNumberTextField2 =  [[UITextField alloc] initWithFrame:landsFrame];
                 if (page <= [RoboPDFModel instance].numberOfPages) {
-                    [pageNumberTextField2 setText:[NSString stringWithFormat:@"%i", page]];
+                    [pageNumberTextField2 setText:[NSString stringWithFormat:@"%lu", (unsigned long)page]];
                 }
                 [pageNumberTextField2 setTextColor:[UIColor whiteColor]];
                 [pageNumberTextField2 setTextAlignment:NSTextAlignmentCenter];
@@ -130,7 +130,7 @@
                 
                 pageNumberTextField =  [[UITextField alloc] initWithFrame:landsFrame];
                 if (page <= [RoboPDFModel instance].numberOfPages) {
-                    [pageNumberTextField setText:[NSString stringWithFormat:@"%i", page]];
+                    [pageNumberTextField setText:[NSString stringWithFormat:@"%lu", (unsigned long)page]];
                 }
                 [pageNumberTextField setTextColor:[UIColor whiteColor]];
                 [pageNumberTextField setTextAlignment:NSTextAlignmentCenter];
@@ -144,7 +144,7 @@
                     
                     landsFrame.origin.x = CGRectGetWidth(self.frame) / 2;
                     pageNumberTextField2 =  [[UITextField alloc] initWithFrame:landsFrame];
-                    [pageNumberTextField2 setText:[NSString stringWithFormat:@"%i", page + 1]];
+                    [pageNumberTextField2 setText:[NSString stringWithFormat:@"%lu", page + 1]];
                     [pageNumberTextField2 setTextColor:[UIColor whiteColor]];
                     [pageNumberTextField2 setTextAlignment:NSTextAlignmentCenter];
                     [pageNumberTextField2 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];

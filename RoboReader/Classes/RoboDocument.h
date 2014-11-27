@@ -62,6 +62,8 @@
 
 + (RoboDocument *)unarchiveFromFileName:(NSString *)filename password:(NSString *)phrase;
 
++ (NSString *)documentsPath;
+
 - (id)initWithFilePath:(NSString *)fullFilePath password:(NSString *)phrase;
 
 - (void)saveRoboDocument;

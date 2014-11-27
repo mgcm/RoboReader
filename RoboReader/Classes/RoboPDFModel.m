@@ -41,8 +41,14 @@
 
 }
 
+
+#ifdef __IPHONE_8_0
+#define isIOS8 floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1
+#endif
+
+
 + (CGRect)getPdfRectsWithSize:(CGSize)onePageSize isLands:(BOOL)isLands {
-    
+
     CGRect bounds = [[UIScreen mainScreen] bounds];
     if (!isLands) {
         // set sizes for portrait pdf - it will save processor time -
@@ -62,28 +68,46 @@
             originPortrY = 0;
         }
         return CGRectMake(originPortrX, originPortrY, widthPortrNew, heightPortrNew);
-    }
-    else {
-        // set sizes for landscapes pdf
-        CGFloat widthLandsNew; CGFloat heightLandsNew;
-        CGFloat originLandsX; CGFloat originLandsY;
-        widthLandsNew = CGRectGetHeight(bounds) / 2;
-        heightLandsNew = CGRectGetHeight(bounds) / 2 * onePageSize.height / onePageSize.width;
-        if (heightLandsNew > CGRectGetWidth(bounds)) {
-            
-            heightLandsNew = CGRectGetWidth(bounds);
-            widthLandsNew = CGRectGetWidth(bounds) * onePageSize.width / onePageSize.height;
-            originLandsX = CGRectGetHeight(bounds) / 2 - widthLandsNew;
-            originLandsY = 0;
+    } else {
+        if (isIOS8) {
+            // set sizes for landscapes pdf
+            CGFloat widthLandsNew; CGFloat heightLandsNew;
+            CGFloat originLandsX; CGFloat originLandsY;
+            widthLandsNew = CGRectGetWidth(bounds) / 2;
+            heightLandsNew = CGRectGetWidth(bounds) / 2 * onePageSize.height / onePageSize.width;
+            if (heightLandsNew > CGRectGetHeight(bounds)) {
+
+                heightLandsNew = CGRectGetHeight(bounds);
+                widthLandsNew = CGRectGetHeight(bounds) * onePageSize.width / onePageSize.height;
+                originLandsX = CGRectGetWidth(bounds) / 2 - widthLandsNew;
+                originLandsY = 0;
+            }
+            else {
+                originLandsX = 0;
+                originLandsY = (CGRectGetHeight(bounds) - heightLandsNew) / 2.0f;
+            }
+            return CGRectMake(originLandsX, originLandsY, widthLandsNew, heightLandsNew);
+        } else {
+            // set sizes for landscapes pdf
+            CGFloat widthLandsNew; CGFloat heightLandsNew;
+            CGFloat originLandsX; CGFloat originLandsY;
+            widthLandsNew = CGRectGetHeight(bounds) / 2;
+            heightLandsNew = CGRectGetHeight(bounds) / 2 * onePageSize.height / onePageSize.width;
+            if (heightLandsNew > CGRectGetWidth(bounds)) {
+
+                heightLandsNew = CGRectGetWidth(bounds);
+                widthLandsNew = CGRectGetWidth(bounds) * onePageSize.width / onePageSize.height;
+                originLandsX = CGRectGetHeight(bounds) / 2 - widthLandsNew;
+                originLandsY = 0;
+            }
+            else {
+                originLandsX = 0;
+                originLandsY = (CGRectGetWidth(bounds) - heightLandsNew) / 2.0f;
+            }
+            return CGRectMake(originLandsX, originLandsY, widthLandsNew, heightLandsNew);
         }
-        else {
-            originLandsX = 0;
-            originLandsY = (CGRectGetWidth(bounds) - heightLandsNew) / 2.0f;
-        }
-        return CGRectMake(originLandsX, originLandsY, widthLandsNew, heightLandsNew);
     }
 }
-
 
 
 @end
