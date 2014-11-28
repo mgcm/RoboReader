@@ -386,6 +386,14 @@
     singleTapOne.delegate = self;
     [self.view addGestureRecognizer:singleTapOne];
 
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+    doubleTap.numberOfTapsRequired = 2;
+    doubleTap.numberOfTouchesRequired = 1;
+    doubleTap.delegate = self;
+    [self.view addGestureRecognizer:doubleTap];
+
+    [singleTapOne requireGestureRecognizerToFail:doubleTap];
+
     leftButton = [[UIButton alloc] init];
     [leftButton addTarget:self action:@selector(prevPage:) forControlEvents:UIControlEventTouchDown];
     [self.view insertSubview:leftButton aboveSubview:theScrollView];
@@ -591,6 +599,12 @@
     else {
         [self hideBars];
     }
+}
+
+
+- (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
+{
+    // this is useful just to cancel the single tap, so the double tap in the content view is called
 }
 
 
