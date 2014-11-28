@@ -108,7 +108,7 @@
                 theContentViewImagePDF = [[UIImageView alloc] init];
                 [theContentViewImagePDF setBackgroundColor:[UIColor blackColor]];
                 
-                CGRect landsFrame = CGRectMake(CGRectGetWidth(frame) / 2, 0, CGRectGetWidth(frame) / 2, CGRectGetHeight(frame));
+                CGRect landsFrame = CGRectMake(CGRectGetWidth(frame) / 4, 0, CGRectGetWidth(frame) / 2, CGRectGetHeight(frame));
                 
                 theContentViewImage2PDF = [[UIImageView alloc] init];
                 pageNumberTextField2 =  [[UITextField alloc] initWithFrame:landsFrame];
@@ -219,9 +219,22 @@
                 [pageNumberTextField2 removeFromSuperview];
                 pageNumberTextField2 = nil;
 
-                CGRect pdfSize2 = [RoboPDFModel getPdfRectsWithSize:pageBarImage.size isLands:_isLandscape]; pdfSize2.origin.x = CGRectGetWidth(self.frame) / 2;
+                CGRect pdfSize2 = [RoboPDFModel getPdfRectsWithSize:pageBarImage.size isLands:_isLandscape];
+                if (pageNumber == 0) {
+                    pdfSize2.origin.y = 0;
+                    CGFloat ratio = pageBarImage.size.width / pageBarImage.size.height;
+                    pdfSize2.size.width = self.bounds.size.height * ratio;
+                    pdfSize2.size.height = self.bounds.size.height;
+                    pdfSize2.origin.x = CGRectGetWidth(self.frame) / 2;
+                } else {
+                    pdfSize2.origin.x = CGRectGetWidth(self.frame) / 2;
+                }
                 [theContentViewImage2PDF setFrame:pdfSize2];
                 [theContentViewImage2PDF setImage:pageBarImage];
+
+                if (pageNumber == 0) {
+                    theContentViewImage2PDF.center = self.center;
+                }
 
                 [UIView animateWithDuration:0.3 delay:0.0
                                     options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction

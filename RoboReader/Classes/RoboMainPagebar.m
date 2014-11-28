@@ -223,7 +223,7 @@
             UITextField *currentPageTextField = [[UITextField alloc] initWithFrame:textFieldRect];
             [currentPageTextField setTextColor:UIColorFromRGB(0xCCCCCC)];
             [currentPageTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-            [currentPageTextField setFont:[UIFont fontWithName:@"Helvetica" size:10]];
+            [currentPageTextField setFont:[UIFont fontWithName:@"Roboto-Bold" size:12]];
 
             //UITextField *smallThumbTextLeft;
             //UITextField *smallThumbTextRight;
@@ -232,14 +232,14 @@
             if (page % 2) {
                 //    [smallThumbView setImage: [UIImage imageNamed:@"page_right.png"]];
                 thumbRect.origin.x += previewPageWidthWithGap;
-                [currentPageTextField setTextAlignment:NSTextAlignmentLeft];
-                [currentPageTextField setText:[NSString stringWithFormat:@"    %i", page]];
+                [currentPageTextField setTextAlignment:NSTextAlignmentCenter];
+                [currentPageTextField setText:[NSString stringWithFormat:@"%i", page]];
             }
             else {
                 //    [smallThumbView setImage: [UIImage imageNamed:@"page_left.png"]];
                 thumbRect.origin.x += previewPageWidthWithGap - sizes.thumbSmallGap;
-                [currentPageTextField setTextAlignment:NSTextAlignmentRight];
-                [currentPageTextField setText:[NSString stringWithFormat:@"%i    ", page]];
+                [currentPageTextField setTextAlignment:NSTextAlignmentCenter];
+                [currentPageTextField setText:[NSString stringWithFormat:@"%i", page]];
             }
             //[smallThumbView addSubview:smallThumbTextLeft];
             //  [trackControl addSubview:smallThumbView];
