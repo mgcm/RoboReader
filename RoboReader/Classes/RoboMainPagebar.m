@@ -119,6 +119,7 @@
         effectView = [[UIVisualEffectView alloc] initWithEffect:blurrEffect];
         effectView.frame = self.bounds;
         [self addSubview:effectView];
+        self.backgroundColor = [UIColor clearColor];
 
         document = object; // Retain the document object for our use
 

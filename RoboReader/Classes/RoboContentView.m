@@ -26,7 +26,7 @@
 #import "RoboPDFModel.h"
 #import "RoboPDFController.h"
 
-#define ZOOM_LEVELS 3
+#define ZOOM_LEVELS 4
 
 @implementation RoboContentView {
     BOOL flag1ZoomedLoaded;
@@ -186,7 +186,11 @@
         flag1ZoomedLoaded = NO;
         flag2Loaded = NO;
         flag2ZoomedLoaded = NO;
-        
+
+        UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+        doubleTap.numberOfTapsRequired = 2;
+        doubleTap.numberOfTouchesRequired = 1;
+        [self addGestureRecognizer:doubleTap];
     }
     
     
@@ -294,6 +298,40 @@
     theContentViewImage2PDF = nil;
 
 }
+
+
+- (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
+{
+    float newScale = [theScrollView zoomScale] * 4.0;
+
+    if (theScrollView.zoomScale > theScrollView.minimumZoomScale)
+    {
+        [theScrollView setZoomScale:theScrollView.minimumZoomScale animated:YES];
+    }
+    else
+    {
+        CGRect zoomRect = [self zoomRectForScale:newScale
+                                      withCenter:[recognizer locationInView:recognizer.view]];
+        [theScrollView zoomToRect:zoomRect animated:YES];
+    }
+}
+
+
+- (CGRect)zoomRectForScale:(float)scale withCenter:(CGPoint)center {
+
+    CGRect zoomRect;
+
+    zoomRect.size.height = [theScrollView frame].size.height / scale;
+    zoomRect.size.width  = [theScrollView frame].size.width  / scale;
+
+    center = [theScrollView convertPoint:center fromView:self];
+
+    zoomRect.origin.x    = center.x - ((zoomRect.size.width / 2.0));
+    zoomRect.origin.y    = center.y - ((zoomRect.size.height / 2.0));
+
+    return zoomRect;
+}
+
 
 @end
 
