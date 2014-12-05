@@ -26,7 +26,7 @@
 #import "RoboPDFModel.h"
 #import "RoboPDFController.h"
 
-#define ZOOM_LEVELS 4
+#define ZOOM_LEVELS 20
 
 @implementation RoboContentView {
     BOOL flag1ZoomedLoaded;
