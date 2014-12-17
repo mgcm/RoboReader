@@ -33,6 +33,12 @@
 @class RoboViewController;
 @class RoboMainToolbar;
 
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Reader Controller Delegate
+///////////////////////////////////////////////////////////////////////////////
+
+
 @protocol RoboViewControllerDelegate <NSObject>
 
 @optional
@@ -40,6 +46,12 @@
 - (void)dismissRoboViewController:(RoboViewController *)viewController;
 
 @end
+
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Reader Public Interface
+///////////////////////////////////////////////////////////////////////////////
+
 
 @interface RoboViewController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate,
         RoboMainToolbarDelegate, RoboMainPagebarDelegate, PDFControllerDelegateToView, RoboContentViewDelegate> {

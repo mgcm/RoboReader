@@ -360,9 +360,8 @@
     
     // if it is ios7+, just use all the status bar space
     toolbarRect.origin.y = (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) ? 0.0f : 20.0f;
-    NSString *toolbarTitle = (self.title == nil) ? [document.fileName stringByDeletingPathExtension] : self.title;
 
-    mainToolbar = [[RoboMainToolbar alloc] initWithFrame:toolbarRect title:toolbarTitle];
+    mainToolbar = [[RoboMainToolbar alloc] initWithFrame:toolbarRect];
 
     mainToolbar.delegate = self;
 
@@ -609,7 +608,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-#pragma mark - Button handlers
+#pragma mark - Toolbar Delegate
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -625,6 +624,17 @@
     }
 
 }
+
+
+- (void)highlightText:(NSString *)text
+{
+    NSLog(@"searching for %@", text);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Other stuff
+///////////////////////////////////////////////////////////////////////////////
 
 
 - (void)openPage:(int)page

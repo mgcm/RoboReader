@@ -19,6 +19,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+
 #import <QuartzCore/QuartzCore.h>
 #import "RoboContentView.h"
 #import "CGPDFDocument.h"
@@ -26,26 +27,27 @@
 #import "RoboPDFModel.h"
 #import "RoboPDFController.h"
 
+
 #define ZOOM_LEVELS 20
 
-@implementation RoboContentView {
+
+@implementation RoboContentView
+{
     BOOL flag1ZoomedLoaded;
     BOOL flag2ZoomedLoaded;
 }
 
 
-- (void)updateMinimumMaximumZoom {
-    
+- (void)updateMinimumMaximumZoom
+{
 	theScrollView.minimumZoomScale = 1.0f;
-    
 	theScrollView.maximumZoomScale = ZOOM_LEVELS;
 }
 
 
-- (id)initWithFrame:(CGRect)frame page:(NSUInteger)page orientation:(BOOL)isLandscape {
-    
-    
-	if ((self = [super initWithFrame:frame]))
+- (id)initWithFrame:(CGRect)frame page:(NSUInteger)page orientation:(BOOL)isLandscape
+{
+    if ((self = [super initWithFrame:frame]))
 	{
 
         noTiledLayer = YES;
@@ -80,23 +82,20 @@
         theContainerView.contentMode = UIViewContentModeRedraw;
         theContainerView.autoresizingMask = UIViewAutoresizingNone;
         theContainerView.backgroundColor = [UIColor blackColor];
-        
-        
-        
+
         //portrait
         if (!isLandscape) {
             
             theContentViewImagePDF = [[UIImageView alloc] init];
-            
            
-            pageNumberTextField =  [[UITextField alloc] initWithFrame:self.bounds];
+            pageNumberTextField = [[UITextField alloc] initWithFrame:self.bounds];
             if (page <= [RoboPDFModel instance].numberOfPages) {
                 [pageNumberTextField setText:[NSString stringWithFormat:@"%lu", (unsigned long)page]];
             }
             [pageNumberTextField setTextColor:[UIColor whiteColor]];
             [pageNumberTextField setTextAlignment:NSTextAlignmentCenter];
             [pageNumberTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-            [pageNumberTextField setFont:[UIFont fontWithName:@"Helvetica-Bold" size:75]];
+            [pageNumberTextField setFont:[UIFont fontWithName:@"Roboto-Light" size:75]];
             [theContainerView addSubview:pageNumberTextField];
             
         }
@@ -118,7 +117,7 @@
                 [pageNumberTextField2 setTextColor:[UIColor whiteColor]];
                 [pageNumberTextField2 setTextAlignment:NSTextAlignmentCenter];
                 [pageNumberTextField2 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-                [pageNumberTextField2 setFont:[UIFont fontWithName:@"Helvetica-Bold" size:75]];
+                [pageNumberTextField2 setFont:[UIFont fontWithName:@"Roboto-Light" size:75]];
                 [theContainerView addSubview:pageNumberTextField2];
                 
             }
@@ -135,7 +134,7 @@
                 [pageNumberTextField setTextColor:[UIColor whiteColor]];
                 [pageNumberTextField setTextAlignment:NSTextAlignmentCenter];
                 [pageNumberTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-                [pageNumberTextField setFont:[UIFont fontWithName:@"Helvetica-Bold" size:75]];
+                [pageNumberTextField setFont:[UIFont fontWithName:@"Roboto-Light" size:75]];
                 [theContainerView addSubview:pageNumberTextField];
                 
                 
@@ -148,7 +147,7 @@
                     [pageNumberTextField2 setTextColor:[UIColor whiteColor]];
                     [pageNumberTextField2 setTextAlignment:NSTextAlignmentCenter];
                     [pageNumberTextField2 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-                    [pageNumberTextField2 setFont:[UIFont fontWithName:@"Helvetica-Bold" size:75]];
+                    [pageNumberTextField2 setFont:[UIFont fontWithName:@"Roboto-Light" size:75]];
                     [theContainerView addSubview:pageNumberTextField2];
                     
                 }

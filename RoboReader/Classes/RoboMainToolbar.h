@@ -25,29 +25,37 @@
 
 @class RoboMainToolbar;
 
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Toolbar Delegate
+///////////////////////////////////////////////////////////////////////////////
+
+
 @protocol RoboMainToolbarDelegate <NSObject>
 
 @required // Delegate protocols
 
 - (void)dismissButtonTapped;
+- (void)highlightText:(NSString *)text;
 
 @end
 
-@interface RoboMainToolbar : UIView {
-@private // Instance variables
 
-    UILabel *theTitleLabel;
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Public Interface for Toolbar
+///////////////////////////////////////////////////////////////////////////////
+
+
+@interface RoboMainToolbar : UIView <UISearchBarDelegate> {
+@private // Instance variables
+    UISearchBar *theSearchBar;
 }
 
 @property(nonatomic, retain) UIVisualEffectView *effectView;
 @property(nonatomic, unsafe_unretained, readwrite) id <RoboMainToolbarDelegate> delegate;
 
-- (id)initWithFrame:(CGRect)frame title:(NSString *)title;
-
-
+- (id)initWithFrame:(CGRect)frame;
 - (void)hideToolbar;
-
 - (void)showToolbar;
-
 
 @end

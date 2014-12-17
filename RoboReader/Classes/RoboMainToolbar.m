@@ -23,19 +23,27 @@
 #import "RoboMainToolbar.h"
 #import "RoboConstants.h"
 
-@implementation RoboMainToolbar
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Constant Macros
+///////////////////////////////////////////////////////////////////////////////
 
 
 #define TITLE_Y 8.0f
 #define TITLE_X 12.0f
 #define TITLE_HEIGHT 28.0f
 
-
-
 #define BUTTON_X 0.0f
 #define BUTTON_Y 0.0f
 #define DONE_BUTTON_WIDTH 44.0f
 
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Toolbar implementation
+///////////////////////////////////////////////////////////////////////////////
+
+
+@implementation RoboMainToolbar
 
 @synthesize delegate;
 @synthesize effectView;
@@ -43,15 +51,8 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    return [self initWithFrame:frame title:nil];
-}
-
-
-- (id)initWithFrame:(CGRect)frame title:(NSString *)title {
-
-
-    if ((self = [super initWithFrame:frame])) {
-
+    if ((self = [super initWithFrame:frame]))
+    {
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 
         UIBlurEffect *blurrEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
@@ -59,31 +60,11 @@
         effectView.frame = self.bounds;
         [self addSubview:effectView];
 
-        CGFloat titleX = TITLE_X;
-        CGFloat titleWidth = (self.bounds.size.width - (titleX * 2.0f));
-
-
         // shift buttons a little to avoid overlapping with ios7 status bar
         float ios7padding = 0.0f;
 
-        CGRect titleRect = CGRectMake(titleX, TITLE_Y + ios7padding, titleWidth, TITLE_HEIGHT);
-
-        theTitleLabel = [[UILabel alloc] initWithFrame:titleRect];
-
-        theTitleLabel.text = title; // Toolbar title
-        theTitleLabel.textAlignment = NSTextAlignmentCenter;
-        theTitleLabel.font = [UIFont systemFontOfSize:20.0f];
-        theTitleLabel.textColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
-        theTitleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-        theTitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        theTitleLabel.backgroundColor = [UIColor clearColor];
-        theTitleLabel.adjustsFontSizeToFitWidth = YES;
-        [self addSubview:theTitleLabel];
-
         UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
         doneButton.frame = CGRectMake(BUTTON_X, BUTTON_Y, DONE_BUTTON_WIDTH, READER_TOOLBAR_HEIGHT);
-
         [doneButton addTarget:self action:@selector(doneButtonTapped:) forControlEvents:UIControlEventTouchDown];
 
         UIImageView *backImage = [[UIImageView alloc] initWithFrame:CGRectMake((READER_TOOLBAR_HEIGHT - 18) / 2, (READER_TOOLBAR_HEIGHT - 18) / 2 + ios7padding, 13, 18)];
@@ -94,12 +75,29 @@
 
         [self addSubview:doneButton];
 
+        theSearchBar = [[UISearchBar alloc] initWithFrame:CGRectInset(self.bounds, 40, 0)];
+        theSearchBar.searchBarStyle = UISearchBarStyleMinimal;
+        theSearchBar.placeholder = @"Pesquisa";
+        theSearchBar.delegate = self;
+        [self addSubview:theSearchBar];
+
+        for (UIView *subView in theSearchBar.subviews)
+        {
+            for (UIView *secondLevelSubview in subView.subviews){
+                if ([secondLevelSubview isKindOfClass:[UITextField class]])
+                {
+                    UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
+                    searchBarTextField.textColor = [UIColor whiteColor];
+                    break;
+                }
+            }
+        }
+
         CGRect newFrame = self.frame;
         newFrame.origin.y -= newFrame.size.height;
         [self setFrame:newFrame];
         self.alpha = 0.0f;
         self.hidden = YES;
-
     }
 
     return self;
@@ -108,13 +106,14 @@
 
 
 - (void)dealloc {
-    theTitleLabel = nil;
+    theSearchBar = nil;
 }
 
 
-- (void)hideToolbar {
-
+- (void)hideToolbar
+{
     if (self.hidden == NO) {
+        [theSearchBar resignFirstResponder];
         [UIView animateWithDuration:0.1 delay:0.0
                             options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction
                          animations:^(void) {
@@ -130,9 +129,9 @@
     }
 }
 
-- (void)showToolbar {
 
-
+- (void)showToolbar
+{
     if (self.hidden == YES) {
         [UIView animateWithDuration:0.1 delay:0.0
                             options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction
@@ -153,7 +152,13 @@
 {
     [super layoutSubviews];
     [effectView setFrame:self.bounds];
+    [theSearchBar setFrame:CGRectInset(self.bounds, 40, 0)];
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Tool Bar Delegate
+///////////////////////////////////////////////////////////////////////////////
 
 
 - (void)doneButtonTapped:(UIBarButtonItem *)button
@@ -161,5 +166,14 @@
     [delegate dismissButtonTapped];
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+#pragma mark - Search Bar Delegate
+///////////////////////////////////////////////////////////////////////////////
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [delegate highlightText:searchBar.text];
+}
 
 @end

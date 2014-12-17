@@ -183,7 +183,7 @@
         pageLabel.textAlignment = NSTextAlignmentCenter;
         pageLabel.backgroundColor = [UIColor clearColor];
         pageLabel.textColor = UIColorFromRGB(0xBEBEBE);
-        [pageLabel setFont:[UIFont fontWithName:@"Helvetica" size:16.0f]];
+        [pageLabel setFont:[UIFont fontWithName:@"Roboto-Light" size:16.0f]];
         //[pageLabelView addSubview:pageLabel]; // Add label view
 
 
@@ -223,7 +223,7 @@
             UITextField *currentPageTextField = [[UITextField alloc] initWithFrame:textFieldRect];
             [currentPageTextField setTextColor:UIColorFromRGB(0xCCCCCC)];
             [currentPageTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-            [currentPageTextField setFont:[UIFont fontWithName:@"Roboto-Bold" size:12]];
+            [currentPageTextField setFont:[UIFont fontWithName:@"Roboto-Light" size:12]];
 
             //UITextField *smallThumbTextLeft;
             //UITextField *smallThumbTextRight;
