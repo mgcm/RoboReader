@@ -257,13 +257,6 @@
 
 - (void)hideBars {
     if (!barsHiddenFlag) {
-        [UIView animateWithDuration:0.1 delay:0.0
-                            options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction
-                         animations:^(void) {
-                             [[UIApplication sharedApplication] setStatusBarHidden:YES];
-                         }
-                         completion:nil
-        ];
         [mainToolbar hideToolbar];
         [mainPagebar hidePagebar];
         barsHiddenFlag = YES;
@@ -273,13 +266,6 @@
 
 - (void)showBars {
     if (barsHiddenFlag) {
-        [UIView animateWithDuration:0.1 delay:0.0
-                            options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction
-                         animations:^(void) {
-                             [[UIApplication sharedApplication] setStatusBarHidden:NO];
-                         }
-                         completion:nil
-        ];
         [mainToolbar showToolbar];
         [mainPagebar showPagebar];
         barsHiddenFlag = NO;
@@ -393,6 +379,7 @@
 
     [singleTapOne requireGestureRecognizerToFail:doubleTap];
 
+    /*
     leftButton = [[UIButton alloc] init];
     [leftButton addTarget:self action:@selector(prevPage:) forControlEvents:UIControlEventTouchDown];
     [self.view insertSubview:leftButton aboveSubview:theScrollView];
@@ -400,6 +387,7 @@
     rightButton = [[UIButton alloc] init];
     [rightButton addTarget:self action:@selector(nextPage:) forControlEvents:UIControlEventTouchDown];
     [self.view insertSubview:rightButton aboveSubview:theScrollView];
+     */
 
     [self willAnimateRotationToInterfaceOrientation:self.interfaceOrientation duration:0];
 
@@ -457,7 +445,7 @@
 	NSLog(@"%s %@ (%d)", __FUNCTION__, NSStringFromCGRect(self.view.bounds), toInterfaceOrientation);
 #endif
 
-    if (UIDeviceOrientationIsLandscape(toInterfaceOrientation))
+    if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation))
         isLandscape = YES;
     else
         isLandscape = NO;
@@ -483,7 +471,7 @@
 #ifdef DEBUGX
 	NSLog(@"%s %@ (%d)", __FUNCTION__, NSStringFromCGRect(self.view.bounds), interfaceOrientation);
 #endif
-    if (UIDeviceOrientationIsLandscape(interfaceOrientation)) {
+    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
 
         if (![[UIApplication sharedApplication] isStatusBarHidden]) {
 
@@ -496,10 +484,10 @@
             }
             
         }
-
+        /*
         [leftButton setFrame:CGRectMake(0, 0, 66.0f, CGRectGetHeight(self.view.frame))];
         [rightButton setFrame:CGRectMake(958.0f, 0, 66.0f, CGRectGetHeight(self.view.frame))];
-
+         */
     }
     else {
         if (![[UIApplication sharedApplication] isStatusBarHidden]) {
@@ -513,9 +501,10 @@
             }
 
         }
+        /*
         [leftButton setFrame:CGRectMake(0, 0, 66.0f, CGRectGetHeight(self.view.frame))];
         [rightButton setFrame:CGRectMake(702.0f, 0, 66.0f, CGRectGetHeight(self.view.frame))];
-
+         */
     }
 }
 

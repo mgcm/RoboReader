@@ -182,7 +182,7 @@
         pageLabel.autoresizingMask = UIViewAutoresizingNone;
         pageLabel.textAlignment = NSTextAlignmentCenter;
         pageLabel.backgroundColor = [UIColor clearColor];
-        pageLabel.textColor = UIColorFromRGB(0xBEBEBE);
+        pageLabel.textColor = UIColorHex(0xBEBEBE);
         [pageLabel setFont:[UIFont fontWithName:@"Roboto-Light" size:16.0f]];
         //[pageLabelView addSubview:pageLabel]; // Add label view
 
@@ -221,7 +221,7 @@
             textFieldRect.origin.y += textFieldRect.size.height;
             textFieldRect.size.height = 10.0f;
             UITextField *currentPageTextField = [[UITextField alloc] initWithFrame:textFieldRect];
-            [currentPageTextField setTextColor:UIColorFromRGB(0xCCCCCC)];
+            [currentPageTextField setTextColor:UIColorHex(0xCCCCCC)];
             [currentPageTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
             [currentPageTextField setFont:[UIFont fontWithName:@"Roboto-Light" size:12]];
 
@@ -544,7 +544,7 @@
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    offsetCounter += fabsf(scrollView.contentOffset.x - prevOffset);
+    offsetCounter += fabs(scrollView.contentOffset.x - prevOffset);
     prevOffset = scrollView.contentOffset.x;
     if (offsetCounter > maxOffsetForUpdate) {
         [self updateFirstAndLastPagesOnScreen2:scrollView.contentOffset.x withRemoving:NO];

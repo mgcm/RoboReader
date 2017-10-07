@@ -76,8 +76,8 @@
     BOOL didRotate;
     BOOL barsHiddenFlag;
 
-    UIButton *leftButton;
-    UIButton *rightButton;
+    //UIButton *leftButton;
+    //UIButton *rightButton;
 
 }
 
