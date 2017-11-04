@@ -49,6 +49,7 @@
 @interface RoboMainToolbar : UIView <UISearchBarDelegate> {
 @private // Instance variables
     UISearchBar *theSearchBar;
+    UILabel * label;
 }
 
 @property(nonatomic, retain) UIVisualEffectView *effectView;

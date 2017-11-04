@@ -64,17 +64,26 @@
         float ios7padding = 0.0f;
 
         UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        doneButton.tintColor = [UIColor whiteColor];
         doneButton.frame = CGRectMake(BUTTON_X, BUTTON_Y, DONE_BUTTON_WIDTH, READER_TOOLBAR_HEIGHT);
         [doneButton addTarget:self action:@selector(doneButtonTapped:) forControlEvents:UIControlEventTouchDown];
 
-        UIImageView *backImage = [[UIImageView alloc] initWithFrame:CGRectMake((READER_TOOLBAR_HEIGHT - 18) / 2, (READER_TOOLBAR_HEIGHT - 18) / 2 + ios7padding, 13, 18)];
-        [backImage setImage:[UIImage imageNamed:@"back_button.png"]];
+        UIImageView *backImage = [[UIImageView alloc] initWithFrame:CGRectMake((READER_TOOLBAR_HEIGHT - 18) / 2, (READER_TOOLBAR_HEIGHT - 18) / 2 + ios7padding, 16, 18)];
+        backImage.contentMode = UIViewContentModeScaleAspectFit;
+        [backImage setImage:[UIImage imageNamed:@"ArrowButton"]];
         [doneButton addSubview:backImage];
 
         doneButton.autoresizingMask = UIViewAutoresizingNone;
 
         [self addSubview:doneButton];
 
+        label = [[UILabel alloc] initWithFrame:CGRectInset(self.bounds, 50, 0)];
+        label.text = @"Voltar";
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont fontWithName:@"Roboto-Light" size:18.0];
+        [self addSubview:label];
+
+        /*
         theSearchBar = [[UISearchBar alloc] initWithFrame:CGRectInset(self.bounds, 40, 0)];
         theSearchBar.searchBarStyle = UISearchBarStyleMinimal;
         theSearchBar.placeholder = @"Pesquisa";
@@ -92,6 +101,7 @@
                 }
             }
         }
+        */
 
         CGRect newFrame = self.frame;
         newFrame.origin.y -= newFrame.size.height;
