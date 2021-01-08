@@ -77,31 +77,23 @@
 
         [self addSubview:doneButton];
 
-        label = [[UILabel alloc] initWithFrame:CGRectInset(self.bounds, 50, 0)];
-        label.text = @"Voltar";
-        label.textColor = [UIColor whiteColor];
-        label.font = [UIFont fontWithName:@"Roboto-Light" size:18.0];
-        [self addSubview:label];
-
-        /*
-        theSearchBar = [[UISearchBar alloc] initWithFrame:CGRectInset(self.bounds, 40, 0)];
-        theSearchBar.searchBarStyle = UISearchBarStyleMinimal;
-        theSearchBar.placeholder = @"Pesquisa";
-        theSearchBar.delegate = self;
-        [self addSubview:theSearchBar];
-
-        for (UIView *subView in theSearchBar.subviews)
-        {
-            for (UIView *secondLevelSubview in subView.subviews){
-                if ([secondLevelSubview isKindOfClass:[UITextField class]])
-                {
-                    UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                    searchBarTextField.textColor = [UIColor whiteColor];
-                    break;
-                }
+        // mgcm: check for notch devices, only show label when there is no notch
+        UIWindow * keyWindow = [[UIApplication sharedApplication] keyWindow];
+        if (@available(iOS 11, *)) {
+            if (keyWindow.safeAreaInsets.top == 0) {
+                label = [[UILabel alloc] initWithFrame:CGRectInset(self.bounds, 50, 0)];
+                label.text = @"Voltar";
+                label.textColor = [UIColor whiteColor];
+                label.font = [UIFont fontWithName:@"Roboto-Light" size:18.0];
+                [self addSubview:label];
             }
+        } else {
+            label = [[UILabel alloc] initWithFrame:CGRectInset(self.bounds, 50, 0)];
+            label.text = @"Voltar";
+            label.textColor = [UIColor whiteColor];
+            label.font = [UIFont fontWithName:@"Roboto-Light" size:18.0];
+            [self addSubview:label];
         }
-        */
 
         CGRect newFrame = self.frame;
         newFrame.origin.y -= newFrame.size.height;
